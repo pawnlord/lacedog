@@ -8,14 +8,18 @@ lacedog is meant to imitate some of the features of netcat, including backdoor a
 unlike netcat, lacedog is separated into client and host. These both have different arguements.  
 
 ## host usage
-python3 lacedog.py \[-p port_number\] \[-L listen_number\]  
+```
+python3 lacedog.py [-p port_number] [-L listen_number]  
+```
 the host is lacedog.py, and uses python 3.  
 it has 2 command line arguements, port (-p) and listening times (-L).  
 - **-p**: port number to use  
 - **-L**: how many times to listen for clients, so you can connect multiple times off of one run.  
 
 ## client usage
-python3 ldclient.py \[-a client_addr\] \[-p port_number\] \[-tf file_to_transfer new_file_name\]    
+```
+python3 ldclient.py [-a client_addr] [-p port_number] [-tf file_to_transfer new_file_name]  
+```
 the client is ldclient.py, also python 3.  
 it has more command line arguements, including connection types.  
 - **-a:** address of host. **arg:** address.  
