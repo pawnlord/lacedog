@@ -17,9 +17,15 @@ if port == 0:
     port = int(input("Port: "))
 
 s.connect((host, port))
+conntype = "backdoor"
 print(s.recv(2048).decode('utf-8'))
+s.send(conntype.encode('utf-8'))
+print("You are in " + conntype + " mode") 
 while True:
     msg = input()
     s.send(msg.encode('utf-8'))
     print(s.recv(8192).decode('utf-8'))
+    if msg == "exit":
+        print("ldclient: exiting!")
+        break;
 s.close()
