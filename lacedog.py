@@ -16,7 +16,7 @@ for i in range(len(sys.argv)):
             listening = 5
 
 if port == 0:
-    print("laceworkdog: Needs port!")
+    print("lacedog: Needs port!")
     port = int(input("Port: "))
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(('', 12345))
@@ -26,7 +26,7 @@ print("Connect to: " + host_ip + " on port " + str(port))
 while listening != 0:
     s.listen(1)
     c, addr = s.accept()
-    c.send(("Welcome to LaceworkDog! this is a Netcat thing.\nyou are on port: " + str(port) + " connected to " + host_ip).encode('utf-8'))
+    c.send(("Welcome to LaceDog! this is a Netcat thing.\nyou are on port: " + str(port) + " connected to " + host_ip).encode('utf-8'))
     print("conntection from " + str(addr))
     conntype = c.recv(1024).decode('utf-8')
     print("connection type: " + conntype)
@@ -49,7 +49,7 @@ while listening != 0:
                 stdout = subprocess.check_output(msg, shell=True).decode('utf-8') + "\ncompleted"
                 c.send(stdout.encode('utf-8'))
             except Exception as e:
-                c.send(('laceworkdog: ' + msg + ': Not a command!\nError: ' + str(e)).encode('utf-8'))
+                c.send(('lacekdog: ' + msg + ': Not a command!\nError: ' + str(e)).encode('utf-8'))
         if conntype == "filetransfer": # file 
             with open(filename, "a") as file:
                 print("WRITING TO FILE: ")
