@@ -40,7 +40,8 @@ you don't need to do anything special on the hosts side.
 
 # TODO
 - Implement more features  
-	- HTTP Requests  
+	- ~~HTTP Requests~~  
+		- Needs to format correctly, but cannot decode  
 - Figure out how to change directories
 - Test on other devices  
 	- ~~Linux~~

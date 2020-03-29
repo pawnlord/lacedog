@@ -1,5 +1,6 @@
 import socket
 import sys
+import http.client
 
 s = socket.socket()
 port = 0
@@ -7,6 +8,7 @@ host = '127.0.0.1'
 conntype = "backdoor"
 filetotransfer = ""
 newfilename = ""
+request = ""
 
 for i in range(len(sys.argv)):
     if sys.argv[i] == '-a':
@@ -29,11 +31,33 @@ for i in range(len(sys.argv)):
         else:
             print("ldclient: -tf (transfer-file): Need New File Name!")
             newfilename = input("Filename: ")
-            
+    if sys.argv[i] == '-httpreq':
+        request = input("HTTP Request: ")
+        conntype = "httprequest"
+
+if conntype == "httprequest":
+    req_method = ""
+    url = ""
+    getting_method = True
+    for c in request:
+        if c == ' ':
+            getting_method = False
+        elif not getting_method:
+            url+=c
+        elif getting_method:
+            req_method+=c
+    conn = http.client.HTTPConnection(url)
+    conn.request(req_method, '/')
+    r1 = conn.getresponse()
+    print("STATUS:", r1.status, " REASON:", r1.reason)
+    print("RESPONSE:\n ", r1.read())
+    exit(0)
+    
 if port == 0:
     print("Needs Port!")
     port = int(input("Port: "))
 
+    
 s.connect((host, port))
 print(s.recv(2048).decode('utf-8'))
 s.send(conntype.encode('utf-8'))
