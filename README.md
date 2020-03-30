@@ -24,7 +24,7 @@ the client is ldclient.py, also python 3.
 it has more command line arguements, including connection types.  
 - **-a:** address of host. **arg:** address.  
 - **-p:** port to use. **arg:** port number.  
-- **-tf:** use file transfer mode (automatic is backdoor mode). **args:** input file, file to output to on host machine.  
+- **-tf:** use file transfer mode (automatic is backdoor mode). **args:** input file, directionality, file to output to on host machine.  
 - **-httpreq:** starts the http request functionality. The actual request is prompted for and this has no arguements.  
 # connection types
 
@@ -36,10 +36,11 @@ cannot change directories yet, but I'm working on it!
   
 ## file transfer
 ```
-ldclient.py -a ... -tf file_to_transfer new_file_name 
+ldclient.py -a ... -tf file_name1 [to/from] file_name2 
 ```  
 you don't need to do anything special on the hosts side.  
 2 arguements: name of the file you want to transfer, and name of the file you want to write to on the host machine.  
+these should be supplied in whatever order makes sense for the direction of `to` or `from`.    
 
 ## http requests
 ```
